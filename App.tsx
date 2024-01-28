@@ -5,114 +5,97 @@
  * @format
  */
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+import React, {useEffect, useState} from 'react';
+import {StatusBar, StyleSheet, Text} from 'react-native';
+import {NavigationContainer, useTheme} from '@react-navigation/native';
+import StackNavigator from './src/navigators/StackNavigator';
+import {COLORS, MyTheme} from './src/utils/constants';
+import BottomSheet from './src/components/BottomSheet';
+import BottomSheetProvider from './src/context/BottomSheetProvider';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {useNetInfo, addEventListener} from '@react-native-community/netinfo';
+import Animated, {
+  SlideInDown,
+  interpolate,
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withTiming,
+} from 'react-native-reanimated';
+import Toast from './src/components/Toast';
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  const indicator = useSharedValue(0);
+  const [isConnected, setConnected] = useState<boolean | null>(true);
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  useEffect(() => {
+    const unsubscribe = addEventListener(state => {
+      indicator.value = state.isConnected
+        ? withTiming(1, {}, () => {
+            indicator.value = withDelay(3000, withTiming(0, {duration: 500}));
+          })
+        : withTiming(1);
+      setConnected(state.isConnected);
+    });
+
+    return () => {
+      // Unsubscribe
+      unsubscribe();
+    };
+  }, []);
+
+  const indicatorStyle = useAnimatedStyle(() => ({
+    paddingVertical: interpolate(indicator.value, [0, 1], [0, 5]),
+    height: interpolate(indicator.value, [0, 1], [0, 30]),
+  }));
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <GestureHandlerRootView style={styles.container}>
+      <Animated.Text
+        style={[
+          isConnected
+            ? styles.connectedNetworkIndicator
+            : styles.disconnectedNetworkIndicator,
+          indicatorStyle,
+        ]}>
+        {isConnected ? 'Connected' : 'You`re offline. Check your connection.'}
+      </Animated.Text>
+      <Toast />
+      <SafeAreaProvider>
+        <BottomSheetProvider>
+          <NavigationContainer>
+            <StatusBar backgroundColor={'#021330'} barStyle={'light-content'} />
+            <StackNavigator />
+          </NavigationContainer>
+        </BottomSheetProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
 
+export default App;
+
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    position: 'relative',
+    zIndex: 9,
+    flex: 1,
+    backgroundColor: COLORS.BACKGROUND,
   },
-  sectionTitle: {
-    fontSize: 24,
+  connectedNetworkIndicator: {
+    // paddingVertical: 5,
+    backgroundColor: 'green',
+    textAlign: 'center',
+    color: 'white',
     fontWeight: '600',
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  disconnectedNetworkIndicator: {
+    // paddingVertical: 5,
+    backgroundColor: 'red',
+    textAlign: 'center',
+    color: 'white',
+    fontWeight: '600',
   },
 });
-
-export default App;
