@@ -10,7 +10,7 @@ import {
 import React, {PropsWithChildren, useState} from 'react';
 import {SvgProps} from 'react-native-svg';
 import {useTheme} from '@react-navigation/native';
-import {bottomSheetProps} from '../../context/BottomSheetProvider';
+import {COLORS} from '../../utils/constants';
 
 const {width} = Dimensions.get('window');
 
@@ -37,7 +37,6 @@ const Dropdown = ({
   actionList,
   RightIcon,
 }: DropdownProps): React.JSX.Element => {
-  const {colors} = useTheme();
   const isOpen = new Animated.Value(0);
   const [open, setOpen] = useState<boolean>(false);
 
@@ -81,15 +80,13 @@ const Dropdown = ({
           <LeftIcon
             width={25}
             height={25}
-            stroke={colors.text}
+            stroke={COLORS.WHITE}
             strokeWidth={0.8}
             style={styles.dropDownLeftIcon}
           />
           <View style={styles.dropDownTitleSection}>
             <View>
-              <Text style={[styles.dropDownTitle, {color: colors.text}]}>
-                {title}
-              </Text>
+              <Text style={[styles.dropDownTitle]}>{title}</Text>
               <Text style={styles.dropDownDescription}>{description}</Text>
             </View>
             <Animated.View
@@ -97,7 +94,7 @@ const Dropdown = ({
               <RightIcon
                 width={20}
                 height={20}
-                stroke={colors.text}
+                stroke={COLORS.WHITE}
                 strokeWidth={0.8}
                 rotation={actionList ? 90 : 0}
               />
@@ -134,6 +131,7 @@ const styles = StyleSheet.create({
   },
   dropDownTitle: {
     fontWeight: '500',
+    color: COLORS.WHITE,
   },
   dropDownDescription: {
     marginTop: 5,

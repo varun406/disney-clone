@@ -6,12 +6,11 @@
  */
 
 import React, {useEffect, useState} from 'react';
-import {StatusBar, StyleSheet, Text} from 'react-native';
+import {Dimensions, StatusBar, StyleSheet, Text} from 'react-native';
 import {NavigationContainer, useTheme} from '@react-navigation/native';
 import StackNavigator from './src/navigators/StackNavigator';
 import {COLORS, MyTheme} from './src/utils/constants';
 import BottomSheet from './src/components/BottomSheet';
-import BottomSheetProvider from './src/context/BottomSheetProvider';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {useNetInfo, addEventListener} from '@react-native-community/netinfo';
@@ -26,9 +25,12 @@ import Animated, {
 } from 'react-native-reanimated';
 import Toast from './src/components/Toast';
 
+const {width: windowWidth, height: windowHeight} = Dimensions.get('window');
+
 function App(): React.JSX.Element {
   const indicator = useSharedValue(0);
   const [isConnected, setConnected] = useState<boolean | null>(true);
+  const [open, setOpen] = useState(true);
 
   useEffect(() => {
     const unsubscribe = addEventListener(state => {
@@ -53,6 +55,7 @@ function App(): React.JSX.Element {
 
   return (
     <GestureHandlerRootView style={styles.container}>
+      <StatusBar backgroundColor={'#021330'} barStyle={'light-content'} />
       <Animated.Text
         style={[
           isConnected
@@ -63,14 +66,19 @@ function App(): React.JSX.Element {
         {isConnected ? 'Connected' : 'You`re offline. Check your connection.'}
       </Animated.Text>
       <Toast />
-      <SafeAreaProvider>
-        <BottomSheetProvider>
-          <NavigationContainer>
-            <StatusBar backgroundColor={'#021330'} barStyle={'light-content'} />
-            <StackNavigator />
-          </NavigationContainer>
-        </BottomSheetProvider>
+      <SafeAreaProvider style={{flex: 1}}>
+        <NavigationContainer>
+          <StackNavigator />
+        </NavigationContainer>
       </SafeAreaProvider>
+      {/* {open && (
+        <BottomSheet
+          open={true}
+          setOpen={setOpen}
+          snapShot={[50, 75]}
+          sheetHeight={windowHeight * 0.1}
+        />
+      )} */}
     </GestureHandlerRootView>
   );
 }

@@ -6,6 +6,7 @@ import BottomNavigator from '../BottomNavigator';
 import WhoWatching from '../../screens/WhoWatching';
 import CreateProfile from '../../screens/CreateProfile';
 import {COLORS} from '../../utils/constants';
+import Detail from '../../screens/Detail';
 
 const Stack = createNativeStackNavigator();
 
@@ -19,9 +20,9 @@ const StackNavigator = () => {
       <Stack.Screen name="Tab" component={BottomNavigator} />
       <Stack.Screen name="CreateProfile" component={CreateProfile} />
       <Stack.Screen
-        name="MySpace"
-        component={CreateProfile}
-        options={{headerShown: false}}
+        name="Detail"
+        component={Detail}
+        options={{headerShown: false, animation: 'slide_from_bottom'}}
       />
     </Stack.Navigator>
   );

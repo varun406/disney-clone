@@ -23,7 +23,11 @@ const BottomNavigator = () => {
         tabBarActiveTintColor: COLORS.WHITE,
         tabBarInactiveTintColor: COLORS.HIGHLIGHT_COLOR,
         tabBarLabelStyle: {fontWeight: 'bold', marginBottom: 5},
-        tabBarStyle: {backgroundColor: COLORS.BACKGROUND},
+        tabBarStyle: {
+          backgroundColor: COLORS.BACKGROUND,
+          borderTopWidth: 0.5,
+          borderColor: '#161A23',
+        },
       }}>
       <Tab.Screen
         name={TAB_ROUTES.HOME}
@@ -113,7 +117,6 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 100,
     backgroundColor: COLORS.THEME_DARK_BLUE,
-    overflow: 'hidden',
   },
   mySpaceIcon: {
     position: 'absolute',

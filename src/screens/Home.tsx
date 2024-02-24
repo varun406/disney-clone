@@ -1,69 +1,51 @@
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import {
   Dimensions,
-  SafeAreaView,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
-import HomeIcon from '../assets/images/svg/bottom-tab/tab-home.svg';
+import MainBanner from '../views/HomeScreen/MainBanner/MainBanner';
 import {COLORS} from '../utils/constants';
-import {useTheme} from '@react-navigation/native';
-import Dropdown from '../components/Dropdown';
-import DownloadIcon from '../assets/images/svg/bottom-tab/tab-downloads.svg';
-import ArrowRight from '../assets/images/svg/dropdown/arrow-right.svg';
-import BottomSheet from '../components/BottomSheet';
-import {BottomSheetContext} from '../context/BottomSheetProvider';
-import Toast from '../components/Toast';
-import {toast} from '../utils/toast';
-
-const {height} = Dimensions.get('window');
+import MovieImageCard from '../components/HomeScreen/MovieImageCard';
+import MovieListCarousel from '../components/HomeScreen/MovieListCarousel';
+import {
+  data,
+  kidsCorner,
+  latestReleases,
+} from '../components/HomeScreen/MovieListCarousel/data';
 
 const Home = () => {
-  const {open, toggleSheet} = useContext(BottomSheetContext);
-
   return (
-    <ScrollView style={styles.container}>
-      {/* <Text style={{color: colors.text}}>hello</Text> */}
-      {/* <Toast /> */}
-      <Dropdown
-        title="Account Settings"
-        description="Subscription Details and Device Manager"
-        LeftIcon={DownloadIcon}
-        RightIcon={ArrowRight}
-        dropDownAction={function () {
-          toggleSheet({open: open, height: 0.2});
-        }}
-        actionList={[
-          {name: 'Download only on WiFi for this devices', icon: ArrowRight},
-        ]}
-      />
-      <Dropdown
-        title="Downloads"
-        description="Download quality, storage & more"
-        LeftIcon={DownloadIcon}
-        RightIcon={ArrowRight}
-        dropDownAction={function () {
-          // toggleSheet({open: open, height: 0.2});
-          toast.error({
-            message: 'Downloading df sfsdfdsfdsfsdf',
-          });
-        }}
-      />
-      <Dropdown
-        title="App Language"
-        description="English"
-        LeftIcon={DownloadIcon}
-        RightIcon={ArrowRight}
-        dropDownAction={function () {
-          toggleSheet({open: open, height: 0.2});
-        }}
-        actionList={[
-          {name: 'Download only on WiFi for this devices', icon: ArrowRight},
-        ]}
-      />
-    </ScrollView>
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <StatusBar
+          backgroundColor="transparent"
+          animated={true}
+          translucent={true}
+        />
+        <MainBanner />
+        <View style={styles.movieListSections}>
+          <MovieListCarousel
+            data={data}
+            title="Continue Watching for Varun"
+            Item={MovieImageCard}
+          />
+          <MovieListCarousel
+            data={latestReleases}
+            title="Latest Releases"
+            Item={MovieImageCard}
+          />
+          <MovieListCarousel
+            data={kidsCorner}
+            title="Kids' Corner"
+            Item={MovieImageCard}
+          />
+        </View>
+      </ScrollView>
+    </View>
   );
 };
 
@@ -73,5 +55,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.BACKGROUND,
+  },
+  scrollContainer: {
+    paddingBottom: 20,
+  },
+  movieListSections: {
+    marginTop: 20,
+    flexDirection: 'column',
+    gap: 15,
   },
 });
