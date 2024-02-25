@@ -1,5 +1,5 @@
 import {Dimensions, Image, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {COLORS} from '../../../utils/constants';
 import CancelIcon from '../../../assets/images/svg/cancel.svg';
 import Skeleton from '../../../components/Skeleton';
@@ -7,23 +7,33 @@ import Skeleton from '../../../components/Skeleton';
 const {width: windowWidth, height: windowHeight} = Dimensions.get('window');
 
 const SearchCard = () => {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setShow(true);
+    }, 2000);
+  }, []);
   return (
     <View style={styles.container}>
-      {/* <View style={styles.cardWrapper}>
-        <>
-          <Image
-            source={{
-              uri: 'https://www.tribute.ca/news/wp-content/uploads/2020/10/alita_battle_angel_ver31_xlg.jpg',
-            }}
-            style={styles.cardImage}
-          />
-          <Text numberOfLines={2} style={styles.cardText}>
-            Alita Battle Angelesv sfdsfsdfsdf
-          </Text>
-        </>
-        <CancelIcon width={15} height={15} stroke="#ffffff" />
-      </View> */}
-      <Skeleton width={270} height={windowHeight * 0.08} />
+      {show ? (
+        <View style={styles.cardWrapper}>
+          <>
+            <Image
+              source={{
+                uri: 'https://www.tribute.ca/news/wp-content/uploads/2020/10/alita_battle_angel_ver31_xlg.jpg',
+              }}
+              style={styles.cardImage}
+            />
+            <Text numberOfLines={2} style={styles.cardText}>
+              Alita Battle Angelesv sfdsfsdfsdf
+            </Text>
+          </>
+          <CancelIcon width={15} height={15} stroke="#ffffff" />
+        </View>
+      ) : (
+        <Skeleton width={270} height={windowHeight * 0.08} />
+      )}
     </View>
   );
 };

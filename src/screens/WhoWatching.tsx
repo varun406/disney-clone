@@ -7,6 +7,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import EditIcon from '../assets/images/svg/edit.svg';
@@ -57,9 +58,11 @@ const WhoWatching = () => {
           numColumns={width >= 768 ? 3 : 2}
           renderItem={({item, index}) =>
             item.image ? (
-              <Pressable
+              <TouchableOpacity
                 onPress={() => navigation.navigate('Tab')}
                 key={index}
+                hitSlop={50}
+                activeOpacity={0.7}
                 style={styles.userCard}>
                 <Image
                   style={styles.userAvatar}
@@ -70,14 +73,15 @@ const WhoWatching = () => {
                 <Text style={[{color: COLORS.WHITE}, styles.userName]}>
                   {item.name}
                 </Text>
-              </Pressable>
+              </TouchableOpacity>
             ) : (
-              <Pressable
-                key={index}
+              <TouchableOpacity
+                hitSlop={50}
+                activeOpacity={0.7}
                 onPress={() => navigation.navigate('CreateProfile')}
                 style={styles.addUserButton}>
                 <PlusIcon width={50} height={50} fill="#fff" />
-              </Pressable>
+              </TouchableOpacity>
             )
           }
         />
@@ -118,17 +122,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   userCard: {
-    overflow: 'hidden',
-    position: 'relative',
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 20,
   },
-  userCardEdit: {
-    position: 'absolute',
-    zIndex: 9,
-    bottom: '50%',
-  },
+
   addUserButton: {
     width: AVATAR_SIZE,
     height: AVATAR_SIZE,

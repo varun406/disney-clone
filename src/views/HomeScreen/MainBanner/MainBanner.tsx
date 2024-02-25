@@ -42,11 +42,17 @@ const MainBanner = () => {
       />
 
       <View style={styles.ctaWrapper}>
-        <TouchableOpacity activeOpacity={0.7} style={styles.watchNowCTA}>
+        <TouchableOpacity
+          onPress={() => console.log('watch now')}
+          activeOpacity={0.7}
+          style={styles.watchNowCTA}>
           <PlayIcon width={15} height={15} />
           <Text style={styles.watchNowText}>Watch Now</Text>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.7} style={styles.addToWatchListCTA}>
+        <TouchableOpacity
+          onPress={() => console.log('plus')}
+          activeOpacity={0.7}
+          style={styles.addToWatchListCTA}>
           <PlusIcon width={25} height={25} fill="#fff" />
         </TouchableOpacity>
       </View>

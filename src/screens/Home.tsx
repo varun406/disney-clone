@@ -19,13 +19,10 @@ import {
 
 const Home = () => {
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <StatusBar
-          backgroundColor="transparent"
-          animated={true}
-          translucent={true}
-        />
+    <>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.scrollContainer}>
         <MainBanner />
         <View style={styles.movieListSections}>
           <MovieListCarousel
@@ -45,7 +42,7 @@ const Home = () => {
           />
         </View>
       </ScrollView>
-    </View>
+    </>
   );
 };
 
@@ -60,6 +57,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   movieListSections: {
+    flex: 1,
     marginTop: 20,
     flexDirection: 'column',
     gap: 15,

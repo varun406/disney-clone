@@ -8,16 +8,36 @@ import CreateProfile from '../../screens/CreateProfile';
 import {COLORS} from '../../utils/constants';
 import Detail from '../../screens/Detail';
 
+export type RootStackParamList = {
+  Tab: undefined;
+  WhoWatching: undefined;
+  CreateProfile: undefined;
+  Detail: undefined;
+};
+
 const Stack = createNativeStackNavigator();
 
 const StackNavigator = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false,
+        headerTintColor: COLORS.WHITE, // Set your desired color here
+        headerTitleAlign: 'center',
+        headerTitleStyle: {
+          color: COLORS.WHITE,
+          fontSize: 18,
+        },
+        headerStyle: {
+          backgroundColor: COLORS.BACKGROUND,
+        },
+        animation: 'slide_from_right',
       }}>
       <Stack.Screen name="WhoWatching" component={WhoWatching} />
-      <Stack.Screen name="Tab" component={BottomNavigator} />
+      <Stack.Screen
+        name="Tab"
+        component={BottomNavigator}
+        options={{headerShown: false}}
+      />
       <Stack.Screen name="CreateProfile" component={CreateProfile} />
       <Stack.Screen
         name="Detail"

@@ -20,6 +20,7 @@ const BottomNavigator = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
+        tabBarHideOnKeyboard: true,
         tabBarActiveTintColor: COLORS.WHITE,
         tabBarInactiveTintColor: COLORS.HIGHLIGHT_COLOR,
         tabBarLabelStyle: {fontWeight: 'bold', marginBottom: 5},

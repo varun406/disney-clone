@@ -19,8 +19,6 @@ const {width: windowWidth} = Dimensions.get('window');
 const AVATAR_SIZE = windowWidth * 0.25;
 const AVATAR_SPACING = (windowWidth - AVATAR_SIZE) / 2;
 
-console.log('AVATAR_SIZE', AVATAR_SIZE);
-
 const CreateProfile = () => {
   const {colors} = useTheme();
   const navigation = useNavigation();

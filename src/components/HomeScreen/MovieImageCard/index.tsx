@@ -14,14 +14,18 @@ const {width: windowWidth, height: windowHeight} = Dimensions.get('window');
 
 type MovieImageCardProps = {
   img: string;
+  autoHeight?: boolean;
 };
 
-const MovieImageCard = ({img}: MovieImageCardProps) => {
+const MovieImageCard = ({img, autoHeight}: MovieImageCardProps) => {
   const navigation = useNavigation();
   return (
     <Pressable
       onPress={() => navigation.navigate('Detail')}
-      style={styles.imageWrapper}>
+      style={[
+        styles.imageWrapper,
+        {height: autoHeight ? 'auto' : windowHeight * 0.17},
+      ]}>
       <Image
         style={styles.image}
         source={{
@@ -36,14 +40,12 @@ export default MovieImageCard;
 
 const styles = StyleSheet.create({
   imageWrapper: {
-    width: windowWidth * 0.31,
-    height: windowHeight * 0.2,
     borderRadius: 4,
   },
   image: {
     width: '100%',
     height: '100%',
-    aspectRatio: 3 / 4,
+    aspectRatio: 3 / 3.8,
     borderRadius: 4,
   },
 });

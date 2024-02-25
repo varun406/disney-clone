@@ -5,32 +5,29 @@
  * @format
  */
 
+import {addEventListener} from '@react-native-community/netinfo';
+import {NavigationContainer} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {Dimensions, StatusBar, StyleSheet, Text} from 'react-native';
-import {NavigationContainer, useTheme} from '@react-navigation/native';
-import StackNavigator from './src/navigators/StackNavigator';
-import {COLORS, MyTheme} from './src/utils/constants';
-import BottomSheet from './src/components/BottomSheet';
+import {StatusBar, StyleSheet} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {useNetInfo, addEventListener} from '@react-native-community/netinfo';
 import Animated, {
-  SlideInDown,
   interpolate,
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
   withTiming,
 } from 'react-native-reanimated';
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 import Toast from './src/components/Toast';
-
-const {width: windowWidth, height: windowHeight} = Dimensions.get('window');
+import StackNavigator from './src/navigators/StackNavigator';
+import {COLORS} from './src/utils/constants';
 
 function App(): React.JSX.Element {
   const indicator = useSharedValue(0);
   const [isConnected, setConnected] = useState<boolean | null>(true);
-  const [open, setOpen] = useState(true);
 
   useEffect(() => {
     const unsubscribe = addEventListener(state => {
@@ -55,7 +52,11 @@ function App(): React.JSX.Element {
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <StatusBar backgroundColor={'#021330'} barStyle={'light-content'} />
+      <StatusBar
+        backgroundColor="transparent"
+        translucent
+        barStyle={'light-content'}
+      />
       <Animated.Text
         style={[
           isConnected
@@ -71,14 +72,6 @@ function App(): React.JSX.Element {
           <StackNavigator />
         </NavigationContainer>
       </SafeAreaProvider>
-      {/* {open && (
-        <BottomSheet
-          open={true}
-          setOpen={setOpen}
-          snapShot={[50, 75]}
-          sheetHeight={windowHeight * 0.1}
-        />
-      )} */}
     </GestureHandlerRootView>
   );
 }

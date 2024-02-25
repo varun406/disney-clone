@@ -39,7 +39,6 @@ const Card = ({item, index, scrollX}: BannerCardProps) => {
   const logoOpacity = scrollX.interpolate({
     inputRange,
     outputRange: [0, 0, 1, 0, 0],
-    extrapolate: 'clamp',
   });
 
   const transformXAnim = scrollX.interpolate({
@@ -54,7 +53,7 @@ const Card = ({item, index, scrollX}: BannerCardProps) => {
   });
 
   return (
-    <View>
+    <View style={styles.container}>
       <Animated.Image
         style={[styles.bannerImage, {opacity: backgroundOpacity}]}
         source={{
@@ -99,6 +98,10 @@ const Card = ({item, index, scrollX}: BannerCardProps) => {
 export default Card;
 
 const styles = StyleSheet.create({
+  container: {
+    width: windowWidth,
+    height: windowHeight * 0.52,
+  },
   gradientOverlay: {
     position: 'absolute',
     top: 0,
