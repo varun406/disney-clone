@@ -24,6 +24,7 @@ import {
 import Toast from './src/components/Toast';
 import StackNavigator from './src/navigators/StackNavigator';
 import {COLORS} from './src/utils/constants';
+import BottomSheet from './src/components/BottomSheet';
 
 function App(): React.JSX.Element {
   const indicator = useSharedValue(0);
@@ -67,6 +68,7 @@ function App(): React.JSX.Element {
         {isConnected ? 'Connected' : 'You`re offline. Check your connection.'}
       </Animated.Text>
       <Toast />
+
       <SafeAreaProvider style={{flex: 1}}>
         <NavigationContainer>
           <StackNavigator />

@@ -13,12 +13,14 @@ import {
 import EditIcon from '../assets/images/svg/edit.svg';
 import PlusIcon from '../assets/images/svg/plus.svg';
 import {COLORS} from '../utils/constants';
+import BottomSheet from '../components/BottomSheet';
 
 const {width} = Dimensions.get('window');
 
 const AVATAR_SIZE = width * 0.22;
 
 const WhoWatching = () => {
+  const [open, setOpen] = useState<boolean>(false);
   const navigation =
     useNavigation<NavigationProp<ReactNavigation.RootParamList>>();
 
@@ -78,7 +80,7 @@ const WhoWatching = () => {
               <TouchableOpacity
                 hitSlop={50}
                 activeOpacity={0.7}
-                onPress={() => navigation.navigate('CreateProfile')}
+                onPress={() => setOpen(prev => !prev)}
                 style={styles.addUserButton}>
                 <PlusIcon width={50} height={50} fill="#fff" />
               </TouchableOpacity>
@@ -86,6 +88,14 @@ const WhoWatching = () => {
           }
         />
       </View>
+      {open && (
+        <BottomSheet
+          open={open}
+          setOpen={setOpen}
+          sheetHeight={500}
+          adaptable={true}
+        />
+      )}
     </View>
   );
 };
