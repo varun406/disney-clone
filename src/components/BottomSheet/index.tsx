@@ -1,5 +1,6 @@
 import {
   Alert,
+  DimensionValue,
   Dimensions,
   Easing,
   Modal,
@@ -11,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import React, {
+  Children,
   PropsWithChildren,
   useEffect,
   useLayoutEffect,
@@ -18,6 +20,12 @@ import React, {
   useState,
 } from 'react';
 import Animated, {
+  BounceInDown,
+  BounceInUp,
+  FadeIn,
+  FadeOut,
+  ReduceMotion,
+  SlideInDown,
   SlideInUp,
   interpolate,
   runOnJS,
@@ -33,6 +41,7 @@ import {Gesture, GestureDetector} from 'react-native-gesture-handler';
 const {width, height: WindowHeight} = Dimensions.get('window');
 
 type BottomSheetProps = PropsWithChildren<{
+  children: React.ReactNode;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   sheetHeight: number;
@@ -40,6 +49,7 @@ type BottomSheetProps = PropsWithChildren<{
 }>;
 
 const BottomSheet = ({
+  children,
   open,
   setOpen,
   sheetHeight,
@@ -47,42 +57,44 @@ const BottomSheet = ({
 }: BottomSheetProps) => {
   const {colors} = useTheme();
   const [layoutHeight, setLayoutHeight] = useState(0);
-  const childrenRef = useSharedValue(0);
   const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-  console.log('layoutHeight', layoutHeight);
-
   //NOTE: HEIGHT
-  const height = useSharedValue<number>(0);
+  const height = useSharedValue<DimensionValue>(adaptable ? 'auto' : 0);
   const heightStyle = useAnimatedStyle(() => ({
-    height: height.value,
+    height: adaptable ? 'auto' : height.value,
   }));
 
   useLayoutEffect(() => {
     height.value = withDelay(
-      100,
-      withSpring(sheetHeight, {
+      50,
+      withSpring(adaptable ? 'auto' : sheetHeight, {
         damping: 15,
       }),
     );
   }, []);
 
-  const handleSheetClose = () => {
-    height.value = withTiming(0, {}, () => {
-      runOnJS(setOpen)(!open);
-    });
-  };
-
   const backdropAnimation = useAnimatedStyle(() => ({
-    opacity: interpolate(
-      height.value,
-      [0, Math.max(100, height.value)],
-      [0, 1],
-    ),
+    opacity: typeof height.value === 'string' ? withTiming(1) : withTiming(0),
   }));
 
   //NOTE: OFFSET
   const offset = useSharedValue(0);
+
+  const handleSheetClose = () => {
+    console.log('closed sheet');
+
+    height.value = withTiming(0, {}, () => {
+      // CLOSING ADAPTABLE BOTTOMSHEET
+      if (adaptable) {
+        offset.value = withTiming(layoutHeight, {}, () => {
+          runOnJS(setOpen)(!open);
+        });
+      } else {
+        runOnJS(setOpen)(!open);
+      }
+    });
+  };
 
   const pan = Gesture.Pan()
     .onChange(event => {
@@ -92,10 +104,11 @@ const BottomSheet = ({
       offset.value = offsetDelta > 0 ? offsetDelta : withSpring(clamp);
     })
     .onFinalize(event => {
-      if (offset.value < (adaptable ? layoutHeight : sheetHeight) / 3) {
+      if (offset.value < (adaptable ? layoutHeight / 3 : sheetHeight) / 3) {
         offset.value = withSpring(0);
       } else {
-        offset.value = event.translationY;
+        offset.value = withTiming(adaptable ? layoutHeight : sheetHeight);
+        // offset.value = event.translationY;
         runOnJS(handleSheetClose)();
       }
     });
@@ -112,63 +125,34 @@ const BottomSheet = ({
     setLayoutHeight(height);
   };
 
-  useEffect(() => {
-    // You can access the layoutHeight here when the bottom sheet opens
-    console.log('Layout Height:', layoutHeight);
-  }, [layoutHeight]);
-
   return (
     <>
       <AnimatedPressable
-        style={[styles.backdrop, backdropAnimation]}
+        entering={FadeIn}
+        exiting={FadeOut}
+        style={[styles.backdrop]}
         onPress={handleSheetClose}>
-        <GestureDetector gesture={pan}>
-          <Animated.View
-            onLayout={onLayout}
-            style={[styles.sheet, !adaptable && heightStyle, transformY]}>
-            <TouchableOpacity>
-              <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-              <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-              <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-              <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-              <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-            </TouchableOpacity>
-            <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-            <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-            <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-            <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-            <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-            <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-            <ScrollView>
-              <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-              <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-              <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-              <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-              <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-              <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-              <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-              <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-              <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-              <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-              <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-              <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-            </ScrollView>
-            {/* <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-            <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-            <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-            <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-            <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-            <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-            <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-            <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-            <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-            <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-            <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-            <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-            <Text style={[{color: colors.text}]}>sdfdsfsd</Text>
-            <Text style={[{color: colors.text}]}>sdfdsfsd</Text> */}
-          </Animated.View>
-        </GestureDetector>
+        <AnimatedPressable
+          entering={
+            adaptable
+              ? BounceInDown.duration(1000).reduceMotion(ReduceMotion.Never)
+              : undefined
+          }
+          style={styles.insidePressable}
+          onPress={() => console.log('noting')}>
+          <GestureDetector gesture={pan}>
+            {/* <Animated.View
+              onLayout={onLayout}
+              style={[styles.sheet, heightStyle, transformY]}>
+              {children}
+            </Animated.View> */}
+            <Animated.View
+              onLayout={onLayout}
+              style={[styles.sheet, heightStyle, transformY]}>
+              {children}
+            </Animated.View>
+          </GestureDetector>
+        </AnimatedPressable>
       </AnimatedPressable>
     </>
   );
@@ -186,6 +170,9 @@ const styles = StyleSheet.create({
     height: WindowHeight,
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.4)',
+  },
+  insidePressable: {
+    marginTop: 'auto',
   },
   sheet: {
     marginTop: 'auto',
